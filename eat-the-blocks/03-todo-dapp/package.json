@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "dev": "nodemon server/index.js",
+    "dev-web": "webpack --watch",
+    "dev-server": "nodemon server/index.js",
     "start": "node server/index.js"
   },
   "keywords": [],
@@ -17,6 +18,13 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.6"
+    "@truffle/solidity-loader": "^0.1.43",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "json-loader": "^0.5.7",
+    "nodemon": "^2.0.6",
+    "webpack": "^5.4.0",
+    "webpack-cli": "^4.2.0"
   }
 }
