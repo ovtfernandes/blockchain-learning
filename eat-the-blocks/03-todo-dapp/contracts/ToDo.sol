@@ -13,7 +13,13 @@ contract ToDo {
   uint lastTaskId;
   mapping(uint => Task) tasks;
 
-  event TaskCreated(uint, uint, string, string, bool);
+  event TaskCreated(
+    uint id,
+    uint date,
+    string content,
+    string author,
+    bool done
+  );
 
   constructor() public {
     lastTaskId = 0;
