@@ -2,14 +2,21 @@
   "name": "03-todo-dapp",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "server/index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon server/index.js",
+    "start": "node server/index.js"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
 }
