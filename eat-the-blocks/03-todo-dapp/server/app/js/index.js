@@ -1,13 +1,13 @@
-import Web3 from 'web3';
-import TruffleContract from '@truffle/contract';
+import App from './lib/app';
 
-import artifact from '../../../build/contracts/ToDo.json';
-
-const provider = new Web3.providers.HttpProvider('http://localhost:9545');
-
-const abstraction = TruffleContract(artifact);
-abstraction.setProvider(provider);
-
-const network = Object.keys(artifact.networks)[0];
-const address = artifact.networks[network].address;
-console.log(address);
+const app = new App(); 
+app.setup()
+    .then(() => { 
+        return app.init(); 
+    }) 
+    .then(() => { 
+        console.log('ETB ToDo List Dapp loaded!'); 
+    }) 
+    .catch((error) => {
+        console.error(`Ooops... something went wrong: ${error}`);
+    });
