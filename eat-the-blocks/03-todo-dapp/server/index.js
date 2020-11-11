@@ -2,8 +2,8 @@ const express = require('express');
 
 app = express();
 
-app.use(express.static('./app'));
-app.use(express.static('../build/contracts'));
+app.use(express.static('server/app'));
+app.use(express.static('build/contracts'));
 
 app.get('/', (req, res) => {
     res.sendFile(`${__dirname}/app/index.html`);
