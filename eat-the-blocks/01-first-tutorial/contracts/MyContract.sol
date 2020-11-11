@@ -1,20 +1,34 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.8.0;
 
-contract MyBaseContract {
-  uint innerVal = 100;
-
-  function innerAdd10(uint val) public pure returns (uint) {
-    return val + 10;
-  }
+contract Parent {
+  string parentVar = "parentVar";
 }
 
-contract MyContract is MyBaseContract {
-  function outerAdd10(uint val) public pure returns (uint) {
-    return MyBaseContract.innerAdd10(val);
+contract Kid1 is Parent {
+  string kid1Var = "kid1Var";
+}
+
+contract Kid2 {
+  string kid2Var = "kid2Var";
+}
+
+contract MyContract is Kid1, Kid2 {
+  string myContractVar = "myContractVar";
+
+  function getMyContractVar() public view returns (string memory) {
+    return myContractVar;
   }
 
-  function getInnerVal() public view returns (uint) {
-    return MyBaseContract.innerVal;
+  function getKid1Var() public view returns (string memory) {
+    return kid1Var;
+  }
+
+  function getKid2Var() public view returns (string memory) {
+    return kid2Var;
+  }
+
+  function getParentVar() public view returns (string memory) {
+    return parentVar;
   }
 }
