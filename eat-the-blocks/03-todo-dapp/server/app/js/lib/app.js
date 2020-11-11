@@ -4,6 +4,7 @@ import TruffleContract from '@truffle/contract';
 import artifact from '../../../../build/contracts/ToDo.json';
 
 import { renderTasks } from './render';
+import { getAccount, getTasks } from './actions';
 
 class App {
     setup() {
@@ -20,9 +21,16 @@ class App {
         this.address = address;
         this.Todo = Todo;
         this.tasksElem = document.getElementById('tasks');
+        this.newTaskForm = document.getElementById('new-task');
+        this.taskContentInput = document.getElementById('task-content');
+        this.taskAuthorInput = document.getElementById('task-author');
 
         return new Promise((resolve, reject) => {
-            Todo.at(address)
+            getAccount(this.web3)
+                .then((account) => {
+                    this.account = account;
+                    return Todo.at(address);
+                })
                 .then((todo) => {
                     this.todo = todo;
                     resolve(todo);
@@ -34,10 +42,25 @@ class App {
     }
 
     init() {
+        this.newTaskForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            this.todo.createTask(
+                this.taskContentInput.value,
+                this.taskAuthorInput.value,
+                { from: this.account, gas: 1000000 },
+            )
+                .then(() => {
+                    console.log('Task created!');
+                })
+                .catch((error) => {
+                    console.log(`Oops... There was an error: ${error}`);
+                });
+        });
+
         return new Promise((resolve, reject) => { 
-            this.todo.getTask(0)
-                .then((task) => { 
-                    renderTasks(this.tasksElem, [task]);  
+            getTasks(this.todo)
+                .then((tasks) => { 
+                    renderTasks(this.tasksElem, tasks);  
                 }); 
         }); 
     }
