@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.8.0;
-pragma experimental ABIEncoderV2;
 
 contract ToDo {
   struct Task {
@@ -11,13 +10,27 @@ contract ToDo {
     bool done;
   }
 
-  Task[] tasks;
+  uint lastTaskId;
+  mapping(uint => Task) tasks;
 
-  function createTask(string memory _content, string memory _author) public {
-    tasks.push(Task(tasks.length, now, _content, _author, false));
+  event TaskCreated(uint, uint, string, string, bool);
+
+  constructor() public {
+    lastTaskId = 0;
   }
 
-  function getTask(uint _id) public view
+  function createTask(string memory _content, string memory _author) public {
+    uint date = now;
+    tasks[lastTaskId] = Task(lastTaskId, date, _content, _author, false);
+    emit TaskCreated(lastTaskId, date, _content, _author, false);
+    lastTaskId++;
+  }
+
+  function getTasksLength() public view returns (uint) {
+    return lastTaskId;
+  }
+
+  function getTask(uint _id) public view taskExists(_id)
     returns (
       uint,
       uint,
@@ -37,7 +50,10 @@ contract ToDo {
     );
   }
 
-  function getTasks() public view returns (Task[] memory) {
-    return tasks;
+  modifier taskExists(uint _id) {
+    if (_id >= lastTaskId) {
+      revert();
+    }
+    _;
   }
 }
