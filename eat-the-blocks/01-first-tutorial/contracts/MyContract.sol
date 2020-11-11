@@ -2,33 +2,55 @@
 pragma solidity >=0.4.22 <0.8.0;
 
 contract Parent {
-  string parentVar = "parentVar";
+  uint contractType = 0;
+
+  function foo() public view returns (uint) {
+    return contractType;
+  }
+
+  function bar() public view returns (uint) {
+    return contractType;
+  }
+
+  function baz() public view returns (uint) {
+    return contractType;
+  }
 }
 
 contract Kid1 is Parent {
-  string kid1Var = "kid1Var";
+  uint contractType = 1;
+
+  function bar() public view returns (uint) {
+    return contractType;
+  }
+
+  function baz() public view returns (uint) {
+    return contractType;
+  }
 }
 
-contract Kid2 {
-  string kid2Var = "kid2Var";
+contract Kid2 is Parent {
+  uint contractType = 2;
+
+  function bar() public view returns (uint) {
+    return super.bar();
+  }
+
+  function baz() public view returns (uint) {
+    return contractType;
+  }
 }
 
 contract MyContract is Kid1, Kid2 {
-  string myContractVar = "myContractVar";
-
-  function getMyContractVar() public view returns (string memory) {
-    return myContractVar;
+  function callFoo() public view returns (uint) {
+    return foo();
   }
 
-  function getKid1Var() public view returns (string memory) {
-    return kid1Var;
+  function callBar() public view returns (uint) {
+    return bar(); // will return 1, and not 0, because Kid1 is before Kid2 in hierarchy
   }
 
-  function getKid2Var() public view returns (string memory) {
-    return kid2Var;
-  }
-
-  function getParentVar() public view returns (string memory) {
-    return parentVar;
+  function callBaz() public view returns (uint) {
+    return baz();
   }
 }
