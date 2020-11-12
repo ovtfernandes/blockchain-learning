@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start:ssc": "static-server 01-ssc/public",
-    "start:hello": "static-server 02-hello/public"
+    "start:hello": "static-server 02-hello/public",
+    "start:storage": "static-server 03-storage/public"
   },
   "keywords": [],
   "author": "",
