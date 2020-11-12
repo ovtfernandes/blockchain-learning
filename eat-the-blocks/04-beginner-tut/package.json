@@ -6,12 +6,19 @@
   "scripts": {
     "start:ssc": "static-server 01-ssc/public",
     "start:hello": "static-server 02-hello/public",
-    "start:storage": "static-server 03-storage/public"
+    "start:storage": "static-server 03-storage/public",
+    "start:advstore": "webpack serve -c 04-advstore/webpack.config.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "static-server": "^2.2.1"
+    "static-server": "^2.2.1",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^4.2.0",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "dependencies": {
+    "web3": "^1.3.0"
   }
 }
