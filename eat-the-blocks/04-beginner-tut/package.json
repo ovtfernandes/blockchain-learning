@@ -1,13 +1,11 @@
 {
-  "name": "01-ssc",
+  "name": "04-beginner-tut",
   "version": "1.0.0",
   "description": "",
-  "main": "truffle-config.js",
-  "directories": {
-    "test": "test"
-  },
+  "main": "index.js",
   "scripts": {
-    "start": "static-server public"
+    "start:ssc": "static-server 01-ssc/public",
+    "start:hello": "static-server 02-hello/public"
   },
   "keywords": [],
   "author": "",
