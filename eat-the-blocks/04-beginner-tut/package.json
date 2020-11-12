@@ -1,0 +1,29 @@
+{
+  "name": "04-beginner-tut",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:ssc": "static-server 01-ssc/public",
+    "start:hello": "static-server 02-hello/public",
+    "start:storage": "static-server 03-storage/public",
+    "start:advstore": "webpack serve -c 04-advstore/webpack.config.js",
+    "start:crud:chain": "cd 05-crud && truffle develop",
+    "start:crud": "webpack serve -c 05-crud/webpack.config.js",
+    "deploy:crud:ropsten": "cd 05-crud && truffle migrate --network ropsten"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@truffle/hdwallet-provider": "^1.2.0",
+    "dotenv": "^8.2.0",
+    "static-server": "^2.2.1",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^4.2.0",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "dependencies": {
+    "web3": "^1.3.0"
+  }
+}
