@@ -41,6 +41,13 @@ class App {
         });  
     }
 
+    getAndRenderTasks() {
+        return getTasks(this.todo)
+            .then((tasks) => { 
+                renderTasks(this.tasksElem, tasks);  
+            }); 
+    }
+
     init() {
         this.newTaskForm.addEventListener('submit', (event) => {
             event.preventDefault();
@@ -50,19 +57,23 @@ class App {
                 { from: this.account, gas: 1000000 },
             )
                 .then(() => {
-                    console.log('Task created!');
-                })
-                .catch((error) => {
-                    console.log(`Oops... There was an error: ${error}`);
+                    this.taskContentInput.value = '';
+                    this.taskAuthorInput.value = '';
+                    this.getAndRenderTasks();
                 });
         });
 
-        return new Promise((resolve, reject) => { 
-            getTasks(this.todo)
-                .then((tasks) => { 
-                    renderTasks(this.tasksElem, tasks);  
-                }); 
-        }); 
+        this.tasksElem.addEventListener('click', (event) => {
+            if(event.target.tagName.toLowerCase() === 'input') {
+                const [,id] = event.target.id.split('-');
+                this.todo.toggleDone(id, { from: this.account, gas: 1000000 })
+                    .then(() => {
+                        this.getAndRenderTasks();
+                    });
+            }
+        });
+        
+        return this.getAndRenderTasks();
     }
 }
 

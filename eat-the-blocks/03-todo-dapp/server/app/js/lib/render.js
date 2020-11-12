@@ -11,10 +11,11 @@ const renderTasks = (tasksElem, tasks = []) => {
             <td>${formatDate(task[1])}</td>
             <td>${task[2]}</td>
             <td>${task[3]}</td>
-            <td>${task[4]}</td>
+            <td><input type="checkbox" id="checkbox-${task[0]}" ${task[4] ? 'checked' : ''}/></td>
+            <td>${task[5] ? formatDate(task[5]) : ''}</td>
         </tr>`);
     });
-    tasksElem.innerHTML += html.join('');
+    tasksElem.innerHTML = html.join('');
 };
   
 export {
