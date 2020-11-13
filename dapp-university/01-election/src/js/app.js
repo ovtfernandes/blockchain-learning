@@ -53,21 +53,52 @@ const App = {
     accAddressP.innerHTML = `Your account: ${App.account}`;
 
     const candidatesTable = document.getElementById('candidatesResults');
+    const candidatesSelect = document.getElementById('candidatesSelect');
+    App.contracts.Election.methods
+      .voters(App.account)
+      .call()
+      .then(hasVoted => {
+        if (hasVoted) {
+          const voteForm = document.getElementById('voteForm');
+          voteForm.style.display = 'none';
+        }
+      });
     App.contracts.Election.methods
       .candidatesCount()
       .call()
       .then(async candidatesCount => {
         const rows = [];
+        const options = ['<option value="0" disabled selected>Select a candidate</option>'];
         for (let i=1; i<=candidatesCount; i++) {
           const { id, name, voteCount } = await App.contracts.Election.methods.candidates(i).call();
           const row = `<tr> <td>${id}</td> <td>${name}</td> <td>${voteCount}</td> </tr>`;
           rows.push(row);
+          const option = `<option value="${id}">${name}</option>`;
+          options.push(option);
         }
         candidatesTable.innerHTML = rows.join('');
+        candidatesSelect.innerHTML = options.join('');
 
         loader.style.display = 'none';
         content.style.display = '';
       });
+  },
+
+  castVote: async function() {
+    const candidatesSelect = document.getElementById('candidatesSelect');
+    const candidateId = candidatesSelect.value;
+    if (candidateId > 0) {
+      App.contracts.Election.methods
+        .vote(candidateId)
+        .send({ from: App.account })
+        .then(() => {
+          const loader = document.getElementById('loader');
+          const content = document.getElementById('content');
+
+          loader.style.display = '';
+          content.style.display = 'none';
+        });
+    }
   },
 
 };
