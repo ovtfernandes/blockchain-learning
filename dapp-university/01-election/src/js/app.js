@@ -19,7 +19,7 @@ const App = {
     }
     // Case 3 - no metamask present, connect to Ganache
     else {
-      App.web3Provider = 'http://localhost:9545';
+      App.web3Provider = 'ws://localhost:9545';
     }
 
     window.web3 = new Web3(App.web3Provider);
@@ -37,7 +37,23 @@ const App = {
         electionArtifact.networks[deploymentKey].address,
     );
 
+    App.listenForEvents();
+
     return App.render();
+  },
+
+  listenForEvents: async function() {
+    App.contracts.Election.events.VotedEvent({
+      fromBlock: 'latest',
+    }, (error,event) => {
+      if (error) {
+        console.error(error);
+      }
+      else {
+        console.log(event);
+      }
+      App.render();
+    });
   },
 
   render: async function() {
