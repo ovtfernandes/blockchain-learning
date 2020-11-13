@@ -1,68 +1,77 @@
-App = {
+const App = {
   web3Provider: null,
   contracts: {},
+  account: '0x0',
 
   init: async function() {
-    // Load pets.
-    $.getJSON('../pets.json', function(data) {
-      var petsRow = $('#petsRow');
-      var petTemplate = $('#petTemplate');
-
-      for (i = 0; i < data.length; i ++) {
-        petTemplate.find('.panel-title').text(data[i].name);
-        petTemplate.find('img').attr('src', data[i].picture);
-        petTemplate.find('.pet-breed').text(data[i].breed);
-        petTemplate.find('.pet-age').text(data[i].age);
-        petTemplate.find('.pet-location').text(data[i].location);
-        petTemplate.find('.btn-adopt').attr('data-id', data[i].id);
-
-        petsRow.append(petTemplate.html());
-      }
-    });
-
     return await App.initWeb3();
   },
 
   initWeb3: async function() {
-    /*
-     * Replace me...
-     */
+    // Case 1 - new metamask present
+    if (typeof window.ethereum !== 'undefined') {
+      await window.ethereum.enable();
+      App.web3Provider = window.ethereum;
+    }
+    // Case 2 - old metamask present
+    else if (typeof window.web3 !== 'undefined') {
+      App.web3Provider = window.web3.currentProvider;
+    }
+    // Case 3 - no metamask present, connect to Ganache
+    else {
+      App.web3Provider = 'http://localhost:9545';
+    }
 
-    return App.initContract();
+    window.web3 = new Web3(App.web3Provider);
+
+    return await App.initContract();
   },
 
-  initContract: function() {
-    /*
-     * Replace me...
-     */
+  initContract: async function() {
+    const electionArtifact = await $.getJSON('Election.json');
+    const deploymentKey = Object.keys(
+      electionArtifact.networks
+    )[0];
+    App.contracts.Election = new window.web3.eth.Contract(
+        electionArtifact.abi,
+        electionArtifact.networks[deploymentKey].address,
+    );
 
-    return App.bindEvents();
+    return App.render();
   },
 
-  bindEvents: function() {
-    $(document).on('click', '.btn-adopt', App.handleAdopt);
+  render: async function() {
+    const loader = document.getElementById('loader');
+    const content = document.getElementById('content');
+
+    loader.style.display = '';
+    content.style.display = 'none';
+
+    const accounts = await window.web3.eth.getAccounts()
+    App.account = accounts[0];
+    const accAddressP = document.getElementById('accountAddress');
+    accAddressP.innerHTML = `Your account: ${App.account}`;
+
+    const candidatesTable = document.getElementById('candidatesResults');
+    App.contracts.Election.methods
+      .candidatesCount()
+      .call()
+      .then(async candidatesCount => {
+        const rows = [];
+        for (let i=1; i<=candidatesCount; i++) {
+          const { id, name, voteCount } = await App.contracts.Election.methods.candidates(i).call();
+          const row = `<tr> <td>${id}</td> <td>${name}</td> <td>${voteCount}</td> </tr>`;
+          rows.push(row);
+        }
+        candidatesTable.innerHTML = rows.join('');
+
+        loader.style.display = 'none';
+        content.style.display = '';
+      });
   },
-
-  markAdopted: function() {
-    /*
-     * Replace me...
-     */
-  },
-
-  handleAdopt: function(event) {
-    event.preventDefault();
-
-    var petId = parseInt($(event.target).data('id'));
-
-    /*
-     * Replace me...
-     */
-  }
 
 };
 
-$(function() {
-  $(window).load(function() {
-    App.init();
-  });
+window.addEventListener('load', () => {
+  App.init();
 });
