@@ -26,7 +26,10 @@ contract("Election", function (accounts) {
 
   it("should allow a voter to cast a vote", async () => {
     const candidateId = 1;
-    await election.vote(candidateId, { from: accounts[0] });
+    const receipt = await election.vote(candidateId, { from: accounts[0] });
+    assert.equal(receipt.logs.length, 1);
+    assert.equal(receipt.logs[0].event, 'VotedEvent');
+    assert.equal(receipt.logs[0].args._candidateId, candidateId);
     const voted = await election.voters(accounts[0]);
     assert(voted);
     const candidate = await election.candidates(candidateId);
