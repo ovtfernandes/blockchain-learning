@@ -22,16 +22,10 @@ function App() {
                   SimpleStorageContract.abi,
                   deployedNetwork && deployedNetwork.address,
                 );
-                console.log(instance);
-          
-                await instance.methods.set(5).send({ from: accountsResponse[0] });
-
-                const response = await instance.methods.get().call();
-
+                
                 setWeb3(web3Instance);
                 setAccounts(accountsResponse);
                 setContract(instance);
-                setStorageValue(response);
             } catch (error) {
                 alert(
                     'Failed to load web3, accounts, or contract. Check console for details.',
@@ -40,6 +34,18 @@ function App() {
             }
         })();
     }, []);
+
+    useEffect(() => {
+        if (web3 && accounts && contract) {
+            (async function() {
+                await contract.methods.set(5).send({ from: accounts[0] });
+
+                const response = await contract.methods.get().call();
+
+                setStorageValue(response);
+            })()
+        }
+    }, [web3, accounts, contract]);
 
     return !web3
         ? (
