@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 
 import getWeb3 from "./getWeb3";
 import SimpleStorageContract from "./contracts/SimpleStorage.json";
+import BlockchainContext from './BlockchainContext';
+import ChildComponent from './ChildComponent';
 
 function App() {
     const [storageValue, setStorageValue] = useState(0);
@@ -34,7 +36,7 @@ function App() {
             }
         })();
     }, []);
-
+    
     useEffect(() => {
         if (web3 && accounts && contract) {
             (async function() {
@@ -47,23 +49,28 @@ function App() {
         }
     }, [web3, accounts, contract]);
 
-    return !web3
-        ? (
-            <div>Loading Web3, accounts, and contract...</div>
-        )
-        : (
-            <div className="App">
-                <h1>Smart Contract Example</h1>
-                <p>
-                    If your contracts compiled and migrated successfully, below will show
-                    a stored value of 5 (by default).
-                </p>
-                <p>
-                    Try changing the value stored on <strong>line 27</strong> of App.js.
-                </p>
-                <div>The stored value is: {storageValue}</div>
-            </div>
-        );
+    return (
+        <BlockchainContext.Provider value={{ web3, accounts, contract }}>
+            {!web3
+                ? (
+                    <div>Loading Web3, accounts, and contract...</div>
+                )
+                : (
+                    <div className="App">
+                        <h1>Smart Contract Example</h1>
+                        <p>
+                            If your contracts compiled and migrated successfully, below will show
+                            a stored value of 5 (by default).
+                        </p>
+                        <p>
+                            Try changing the value stored on <strong>line 27</strong> of App.js.
+                        </p>
+                        <div>The stored value is: {storageValue}</div>
+                        <ChildComponent />
+                    </div>
+                )}
+        </BlockchainContext.Provider>
+    );
 }
 
 export default App;
