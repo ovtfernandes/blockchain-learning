@@ -1,4 +1,5 @@
 module.exports = {
+  contracts_build_directory: './src/contracts',
   // See <http://truffleframework.com/docs/advanced/configuration>
   // for more about customizing your Truffle configuration!
   networks: {
