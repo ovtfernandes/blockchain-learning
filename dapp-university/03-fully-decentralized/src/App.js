@@ -8,7 +8,7 @@ const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' 
 function App() {
     const [buffer, setBuffer] = useState(null);
     const [memePath, setMemePath] = useState('QmPL8ZSiukWKs2DKTL5bogqeVKdbpv1rZSUyChQTTEE9cU');
-    const [account, setAccount] = useState(null);
+    const [account, setAccount] = useState('');
 
     useEffect(() => {
         (async function() {
@@ -42,6 +42,11 @@ function App() {
                 >
                     Meme of the Day
                 </span>
+                <ul className="navbar-nav px-3">
+                    <li className="nav-item text-nowrap d-none d-sm-none d-sm-block">
+                        <small className="text-white">{account}</small>
+                    </li>
+                </ul>
             </nav>
             <div className="container-fluid mt-5">
                 <div className="row">
