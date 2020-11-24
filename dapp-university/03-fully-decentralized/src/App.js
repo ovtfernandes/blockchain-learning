@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ipfsClient from 'ipfs-http-client';
 
 import getWeb3 from './getWeb3';
+import Meme from './contracts/Meme.json';
 
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 
@@ -9,12 +10,24 @@ function App() {
     const [buffer, setBuffer] = useState(null);
     const [memePath, setMemePath] = useState('QmPL8ZSiukWKs2DKTL5bogqeVKdbpv1rZSUyChQTTEE9cU');
     const [account, setAccount] = useState('');
+    const [contract, setContract] = useState(null);
 
     useEffect(() => {
         (async function() {
-            window.web3 = await getWeb3();
+            const avoidBrowserWallet = process.env.NODE_ENV === 'development'
+            window.web3 = await getWeb3(avoidBrowserWallet);
             const accounts = await window.web3.eth.getAccounts();
             setAccount(accounts[0]);
+            const networkId = await window.web3.eth.net.getId();
+            const networkData = Meme.networks[networkId];
+            if (networkData) {
+                const { abi } = Meme;
+                const { address } = networkData;
+                setContract(new window.web3.eth.Contract(abi, address));
+            }
+            else {
+                console.log('Contract not deployed to this network');
+            }
         })();
     }, []);
 
