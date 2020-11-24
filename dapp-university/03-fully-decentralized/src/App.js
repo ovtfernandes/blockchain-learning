@@ -1,11 +1,22 @@
-import React, { useState } from 'react';
-
+import React, { useEffect, useState } from 'react';
 import ipfsClient from 'ipfs-http-client';
+
+import getWeb3 from './getWeb3';
+
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 
 function App() {
     const [buffer, setBuffer] = useState(null);
     const [memePath, setMemePath] = useState('QmPL8ZSiukWKs2DKTL5bogqeVKdbpv1rZSUyChQTTEE9cU');
+    const [account, setAccount] = useState(null);
+
+    useEffect(() => {
+        (async function() {
+            window.web3 = await getWeb3();
+            const accounts = await window.web3.eth.getAccounts();
+            setAccount(accounts[0]);
+        })();
+    }, []);
 
     function captureFile(event) {
         event.preventDefault();
