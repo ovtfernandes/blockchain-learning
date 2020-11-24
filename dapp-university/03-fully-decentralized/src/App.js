@@ -8,7 +8,7 @@ const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' 
 
 function App() {
     const [buffer, setBuffer] = useState(null);
-    const [memePath, setMemePath] = useState('QmPL8ZSiukWKs2DKTL5bogqeVKdbpv1rZSUyChQTTEE9cU');
+    const [memePath, setMemePath] = useState('');
     const [account, setAccount] = useState('');
     const [contract, setContract] = useState(null);
 
@@ -23,7 +23,10 @@ function App() {
             if (networkData) {
                 const { abi } = Meme;
                 const { address } = networkData;
-                setContract(new window.web3.eth.Contract(abi, address));
+                const contract = new window.web3.eth.Contract(abi, address)
+                setContract(contract);
+                const result = await contract.methods.get().call();
+                setMemePath(result);
             }
             else {
                 console.log('Contract not deployed to this network');
@@ -44,6 +47,7 @@ function App() {
     async function onSubmit(event) {
         event.preventDefault();
         const result = await ipfs.add(buffer);
+        await contract.methods.set(result.path).send({ from: account });
         setMemePath(result.path);
     }
 
