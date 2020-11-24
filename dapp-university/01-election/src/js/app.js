@@ -28,10 +28,8 @@ const App = {
   },
 
   initContract: async function() {
-    const electionArtifact = await $.getJSON('Election.json');
-    const deploymentKey = Object.keys(
-      electionArtifact.networks
-    )[0];
+    const electionArtifact = await $.getJSON('contracts/Election.json');
+    const deploymentKey = await window.web3.eth.net.getId();
     App.contracts.Election = new window.web3.eth.Contract(
         electionArtifact.abi,
         electionArtifact.networks[deploymentKey].address,
